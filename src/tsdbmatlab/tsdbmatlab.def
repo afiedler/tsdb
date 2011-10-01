@@ -1,0 +1,11 @@
+LIBRARY TSDBMATLAB.mexw32
+EXPORTS TSDBopen
+EXPORTS TSDBclose
+EXPORTS TSDBopen_file
+EXPORTS TSDBclose_file
+EXPORTS TSDBget_timeseries_info
+EXPORTS TSDBtimeseries_append
+EXPORTS TSDBread_timeseries_by_timestamp
+EXPORTS TSDBget_timeseries_names
+EXPORTS TSDBcreate_file
+EXPORTS TSDBcreate_timeseries
