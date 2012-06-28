@@ -47,10 +47,18 @@ solution "TSDB"
     files  { "src/tsdbcreate/*.h", "src/tsdbcreate/*.cpp" }
     includedirs { "src/tsdb" }
     links { "tsdb", "hdf5", "hdf5_hl", "boost_system-mt", "boost_date_time-mt" }
- 
+
   project "tsdbimport"
     language "C++"
     kind "ConsoleApp"
     files  {  "src/tsdbimport/*.h", "src/tsdbimport/*.cpp" }
     includedirs { "src/tsdb", "src/ticpp" }
     links { "tsdb", "hdf5", "hdf5_hl", "boost_system-mt", "boost_date_time-mt", "ticpp" }
+
+  project "tsdbview"
+    language "C++"
+    kind "ConsoleApp"
+    files  { "src/tsdbview/*.h", "src/tsdbview/*.cpp" }
+    includedirs { "src/tsdb" }
+    links { "tsdb", "hdf5", "hdf5_hl", "boost_system-mt", "boost_date_time-mt" }
+ 

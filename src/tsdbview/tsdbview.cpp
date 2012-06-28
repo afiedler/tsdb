@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
 			nrecords = j-i+1;
 
 			for( k =0; k<nrecords; k+=100) {
-				cout << i+k << Ts->getStructure()->structsToString(Ts->getStructure()->pointerToMember(records,k,0),
+				cout << i+k << Ts->structure()->structsToString(Ts->structure()->pointerToMember(records,k,0),
 					(((unsigned int) nrecords) - k < 100 ? ((unsigned int) nrecords)-k : 100),",","\n") << endl;
 			}
 			free(records);
