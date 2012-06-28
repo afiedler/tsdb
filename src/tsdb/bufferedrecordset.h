@@ -14,7 +14,6 @@ public:
 	hsize_t firstRecordId();
 	hsize_t size();
 	void set_my_buffer_direction(bool direction);
-	void set_my_buffer_size(int n);
 	~BufferedRecordSet(void);
 
 private:

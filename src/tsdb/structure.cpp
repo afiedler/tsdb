@@ -3,6 +3,7 @@
 #include "tsdb.h"
 #include <vector>
 
+
 using namespace std;
 
 namespace tsdb {
@@ -68,7 +69,6 @@ Structure::Structure(std::vector<Field*> new_fields, std::vector<size_t> offsets
 	this->name_of_fields = (char**) malloc(sizeof(char*)*this->nfields);
 
 	
-	size_t offset = 0;
 	for(size_t i=0;i < this->fields.size();i++) {
 		this->size_of_fields[i] = this->fields[i]->getSizeOf();
 		this->type_of_fields[i] = this->fields[i]->getHDF5Type();

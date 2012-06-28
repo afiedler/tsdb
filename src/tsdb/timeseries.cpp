@@ -421,15 +421,6 @@ bool Timeseries::createIndexIfNecessary(void) {
  * point, looking for places to insert additional index points.
  * </remarks>
  */
-
-#ifdef _GCC_
-/* Conveience structure for index records */
-#pragma pack(push, index_record, 4)
-typedef struct {
-timestamp_t timestamp;
-hsize_t record_id; } index_record_t;
-#pragma pack(pop, index_record )
-#endif
 void Timeseries::indexTail(void) {
 	
 	/* Check if an index is even necessary. Create index returns true is the table is too small
@@ -438,15 +429,6 @@ void Timeseries::indexTail(void) {
 	if(createIndexIfNecessary()) {
 		return;
 	}
-
-	#ifndef _GCC_
-	/* Conveience structure for index records */
-	#pragma pack(push, index_record, 4)
-	typedef struct {
-	timestamp_t timestamp;
-	hsize_t record_id; } index_record_t;
-	#pragma pack(pop, index_record )
-	#endif
 
 
 	tracer << "indexing the tail of series: " << my_name << endl;
@@ -732,7 +714,6 @@ herr_t Timeseries::recordId_GE(timestamp_t timestamp, hsize_t* record_id){
 	// group.
 	size_t i;
 	timestamp_t thists = 0;
-	timestamp_t matchts = 0;
 	for(i=0;i<(tbl_last_id - tbl_first_id)+1;i++) {
 		thists = *((timestamp_t*) my_structure->pointerToMember(tbl_records,i,0));
 		if(thists >= timestamp) {
@@ -1110,11 +1091,7 @@ timestamp_t ptime_to_timestamp(boost::posix_time::ptime timestamp) {
 /** <summary>Compares two records for sorting purposes.</summary>
  * <remarks>See the C <c>qsort()</c> function for details.</remarks>
  */
-#ifndef _GCC_
-int tsdb::record_cmp(const void *a, const void *b) {
-#else
 int record_cmp(const void *a, const void *b) {
-#endif
 	timestamp_t tsA,tsB;
 	tsA = *((timestamp_t*) a);
 	tsB = *((timestamp_t*) b);

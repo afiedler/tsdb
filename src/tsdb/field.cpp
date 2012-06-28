@@ -1,6 +1,7 @@
 /* STL Classes */
 #include <string>
 #include <sstream>
+#include "string.h"
 
 /* External Libraries */
 #include "boost/date_time/posix_time/posix_time.hpp"
@@ -473,10 +474,10 @@ const string StringField::getTSDBType() {
 const string StringField::toString(const void* fld) {
 	char * fld_buf = (char*) malloc(this->size_of+1);
 	memset(fld_buf,0,this->size_of+1);
-#ifndef _GCC_
+#ifdef WIN32
 	strcpy_s(fld_buf,this->size_of,(char*)fld);
 #else
-	strcpy(fld_buf,(char*)fld);
+    strcpy(fld_buf,(char*)fld);
 #endif
 
 	stringstream sout;

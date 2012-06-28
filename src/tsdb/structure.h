@@ -3,6 +3,7 @@
 /* STL Classes */
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 /* External Libraries */
 #include "hdf5.h"
@@ -10,11 +11,6 @@
 /* TSDB Includes */
 #include "field.h"
 #include "tsdb.h"
-
-#ifdef _GCC_
-#include <stdexcept>
-#include <cstring>
-#endif
 
 namespace tsdb {
 /* Forward Declarations */

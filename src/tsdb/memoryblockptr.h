@@ -4,10 +4,6 @@
 #include <boost/shared_ptr.hpp>
 #include "memoryblock.h"
 
-#ifdef _GCC_
-#include <cstring>
-#endif
-
 namespace tsdb {
 class MemoryBlockPtr
 {

@@ -31,6 +31,7 @@ public:
 	void setEscapeCharacter(std::string new_esc);
 	void setQuoteCharacter(std::string new_quote);
 	void setSimpleParse(bool _simple_parse);
+	std::vector<tsdb::FieldParser*>& fieldParsers();
 	static void trim(std::string& str);
 	~RecordParser(void);
 private:

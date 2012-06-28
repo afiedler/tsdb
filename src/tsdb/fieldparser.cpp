@@ -33,6 +33,12 @@ FieldParser::~FieldParser(void)
 void FieldParser::writeParsedTokensToRecord(const std::vector<std::string> &tokens, void* record) {
 }
 
+void FieldParser::setMissingTokenReplacement(std::string _missing_token_replacement) {
+	this->missing_tokens_ok = true;
+	this->missing_token_replacement = _missing_token_replacement;
+}
+
+
 /** <summary>
  * Binds the FieldParser to a RecordParser. 
  * </summary>
@@ -81,6 +87,7 @@ TimestampFieldParser::TimestampFieldParser(std::vector<size_t> new_consume_token
 	this->consume_tokens = new_consume_tokens;
 	this->format = new_format;
 	this->field_name = new_field_name;
+	this->missing_tokens_ok = false;
 
 	this->locale_format = locale(locale::classic(), 
 		new boost::posix_time::time_input_facet(this->format));
@@ -105,7 +112,13 @@ void TimestampFieldParser::writeParsedTokensToRecord(const std::vector<std::stri
 	boost::posix_time::ptime pt;
 
 	for(size_t i = 0;i<this->consume_tokens.size();i++) {
-		token_string = token_string + " " + tokens.at(consume_tokens.at(i));
+		if(consume_tokens.at(i) >= tokens.size() && this->missing_tokens_ok) {
+			token_string = token_string + " " + this->missing_token_replacement;
+		} else {
+			// note: this will throw an exception if missing_tokens_ok = false and 
+			// the token to be consumed is out of bounds
+			token_string = token_string + " " + tokens.at(consume_tokens.at(i));
+		}
 	}
 
 	/* Now, the actual parsing of the timestamp string */
@@ -138,7 +151,7 @@ StringFieldParser::StringFieldParser(std::vector<size_t> new_consume_tokens,
 	using namespace std;											  
 	this->consume_tokens = new_consume_tokens;
 	this->field_name = new_field_name;
-
+	this->missing_tokens_ok = false;
 }
 
 /** <summary>
@@ -154,10 +167,17 @@ void StringFieldParser::writeParsedTokensToRecord(const std::vector<std::string>
 		throw(FieldParserException("not bound to record parser"));
 	}
 
-	string token_string = "";
+	string token_string;
+	token_string = tokens.at(consume_tokens.at(0));
 
-	for(size_t i = 0;i<this->consume_tokens.size();i++) {
-		token_string = token_string + tokens.at(consume_tokens.at(i));
+	for(size_t i = 1;i<this->consume_tokens.size();i++) {
+		if(consume_tokens.at(i) >= tokens.size() && this->missing_tokens_ok) {
+			token_string = token_string + " " + this->missing_token_replacement;
+		} else {
+			// note: this will throw an exception if missing_tokens_ok = false and 
+			// the token to be consumed is out of bounds
+			token_string = token_string + " " + tokens.at(consume_tokens.at(i));
+		}
 	}
 
 	// create some scratch memory to put the string in
@@ -193,6 +213,7 @@ Int32FieldParser::Int32FieldParser(size_t token, std::string new_field_name) {
 	using namespace std;											  
 	this->consume_token = token;
 	this->field_name = new_field_name;
+	this->missing_tokens_ok = false;
 }
 
 /** <summary>
@@ -211,8 +232,15 @@ void Int32FieldParser::writeParsedTokensToRecord(const std::vector<std::string> 
 
 	/* Now, the actual parsing of the string */
 	tsdb::int32_t int32;
-	
-	int32 = atol(tokens.at(this->consume_token).c_str());
+	if(this->missing_tokens_ok) {
+		if(this->consume_token >= tokens.size()) {
+			int32 = atol(this->missing_token_replacement.c_str());
+		} else {
+			int32 = atol(tokens.at(this->consume_token).c_str());
+		}
+	} else {
+		int32 = atol(tokens.at(this->consume_token).c_str());
+	}
 	
 	// Write the timestamp to the record
 	this->record_parser->getRecordStructure()->setMember(record,this->field_id,&int32);
@@ -236,6 +264,7 @@ Int8FieldParser::Int8FieldParser(size_t token, std::string new_field_name) {
 	using namespace std;											  
 	this->consume_token = token;
 	this->field_name = new_field_name;
+	this->missing_tokens_ok = false;
 }
 
 /** <summary>
@@ -255,7 +284,16 @@ void Int8FieldParser::writeParsedTokensToRecord(const std::vector<std::string> &
 	/* Now, the actual parsing of the string */
 	tsdb::int8_t int8;
 	int integer;
-	integer = atol(tokens.at(this->consume_token).c_str());
+	if(this->missing_tokens_ok) {
+		if(this->consume_token >= tokens.size()) {
+			integer = atol(this->missing_token_replacement.c_str());
+		} else {
+			integer = atol(tokens.at(this->consume_token).c_str());
+		}
+	} else {
+		integer = atol(tokens.at(this->consume_token).c_str());
+	}
+
 	if(integer > 127 || integer < -127) {
 		throw(FieldParserException("Integer out of bounds."));
 	}
@@ -285,6 +323,7 @@ CharFieldParser::CharFieldParser(size_t token, std::string new_field_name) {
 	using namespace std;											  
 	this->consume_token = token;
 	this->field_name = new_field_name;
+	this->missing_tokens_ok = false;
 }
 
 /** <summary>
@@ -303,8 +342,15 @@ void CharFieldParser::writeParsedTokensToRecord(const std::vector<std::string> &
 
 	/* Now, the actual parsing of the string */
 	const char* charptr;
-	
-	charptr = tokens.at(this->consume_token).c_str();
+	if(this->missing_tokens_ok) {
+		if(this->consume_token >= tokens.size()) {
+			charptr = this->missing_token_replacement.c_str();
+		} else {
+			charptr = tokens.at(this->consume_token).c_str();
+		}
+	} else {
+		charptr = tokens.at(this->consume_token).c_str();
+	}
 
 	
 	// Write the timestamp to the record
@@ -335,6 +381,7 @@ DoubleFieldParser::DoubleFieldParser(size_t token, std::string new_field_name) {
 	using namespace std;											  
 	this->consume_token = token;
 	this->field_name = new_field_name;
+	this->missing_tokens_ok = false;
 }
 
 /** <summary>
@@ -353,8 +400,17 @@ void DoubleFieldParser::writeParsedTokensToRecord(const std::vector<std::string>
 
 	/* Now, the actual parsing of the string */
 	tsdb::ieee64_t ieee64;
-	
-	this_str = tokens.at(this->consume_token);
+
+	if(this->missing_tokens_ok) {
+		if(this->consume_token >= tokens.size()) {
+			this_str = this->missing_token_replacement;
+		} else {
+			this_str = tokens.at(this->consume_token);
+		}
+	} else {
+		this_str = tokens.at(this->consume_token);
+	}
+
 	tsdb::RecordParser::trim(this_str);
 	
 	if(this_str == "") {

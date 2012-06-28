@@ -5,10 +5,6 @@
 
 #include "tsdb.h"
 
-#ifdef _GCC_
-#include <stdexcept>
-#endif
-
 namespace tsdb {
 
 /** <summary>Represents a means to filter unparsed tokens</summary>

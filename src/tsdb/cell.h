@@ -5,6 +5,7 @@
 #include "record.h"
 #include <string>
 #include <ostream>
+#include <stdexcept>
 
 namespace tsdb {
 

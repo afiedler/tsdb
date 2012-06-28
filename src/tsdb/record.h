@@ -6,9 +6,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <string>
-#ifdef _GCC_
-#include <cstring>
-#endif
+#include <stdexcept>
 
 namespace tsdb {
 

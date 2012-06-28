@@ -43,11 +43,6 @@ void BufferedRecordSet::set_my_buffer_direction(bool direction)
 	this->my_buffer_direction = direction;
 }
 
-void BufferedRecordSet::set_my_buffer_size(int n)
-{
-	this->my_BUFFER_SIZE = n;
-}
-
 
 /** <summary>Returns a Record at index i</summary>
  * <remarks>Returns the i-th Record. The index starts from 0, and refers to the index in the

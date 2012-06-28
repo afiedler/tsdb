@@ -7,7 +7,6 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include <boost/make_shared.hpp>
 #include "memoryblock.h"
-#include "memoryblockptr.h"
 
 namespace tsdb {
 

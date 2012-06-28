@@ -11,11 +11,6 @@ solution "TSDB"
     os.rmdir("bin")
   end
 
-  project "tsdb"
-  	language "C++"
-  	kind "SharedLib"
-  	files  { "src/tsdb/*.h", "src/tsdb/*.cpp" }
-  	links { "hdf5", "hdf5_hl", "boost_system-mt", "boost_date_time-mt" }
  
   configuration { "Debug*" }
     defines { "_DEBUG", "DEBUG" }
@@ -24,3 +19,38 @@ solution "TSDB"
   configuration { "Release*" }
     defines { "NDEBUG" }
     flags   { "Optimize" }
+
+  project "ticpp"
+    -- Making this as a static lib
+    kind          "StaticLib"
+    -- Set the files to include/exclude.
+    files           { "src/ticpp/*.cpp", "src/ticpp*.h" }
+    excludes          { "xmltest.cpp" }
+
+    -- Set the defines.
+    defines           { "TIXML_USE_TICPP" }
+
+    -- Common setup
+    language          "C++"
+    flags           { "ExtraWarnings" }
+
+
+  project "tsdb"
+    language "C++"
+    kind "SharedLib"
+    files  { "src/tsdb/*.h", "src/tsdb/*.cpp" }
+    links { "hdf5", "hdf5_hl", "boost_system-mt", "boost_date_time-mt" }
+
+  project "tsdbcreate"
+    language "C++"
+    kind "ConsoleApp"
+    files  { "src/tsdbcreate/*.h", "src/tsdbcreate/*.cpp" }
+    includedirs { "src/tsdb" }
+    links { "tsdb", "hdf5", "hdf5_hl", "boost_system-mt", "boost_date_time-mt" }
+ 
+  project "tsdbimport"
+    language "C++"
+    kind "ConsoleApp"
+    files  {  "src/tsdbimport/*.h", "src/tsdbimport/*.cpp" }
+    includedirs { "src/tsdb", "src/ticpp" }
+    links { "tsdb", "hdf5", "hdf5_hl", "boost_system-mt", "boost_date_time-mt", "ticpp" }

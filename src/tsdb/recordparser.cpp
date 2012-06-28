@@ -331,21 +331,6 @@ void* RecordParser::parseString(const std::string &line) {
  */
 bool RecordParser::parseBasicString(const std::string &line, void * record) {
 	using namespace std;
-	/*using namespace boost;
-	unsigned int counter = 0;
-
-	char_separator<char> csep(this->delim.c_str(),"", boost::keep_empty_tokens);
-	tokenizer<char_separator<char>> tok(line,csep);
-
-	/*for(tokenizer<char_separator<char>>::iterator beg=tok.begin();
-		beg!=tok.end(); ++beg) {
-			if(this->tokenbuf.size() < ++counter) { this->tokenbuf.resize(counter); }
-			this->tokenbuf[counter-1].assign(*beg);
-	}
-
-	this->tokenbuf.resize(counter);*/
-
-	/*this->tokenbuf.assign(tok.begin(),tok.end());*/
 	
 	stringstream ss(line);
 	unsigned int counter = 0;
@@ -393,8 +378,8 @@ bool RecordParser::parseString(const std::string &line, void * record) {
 		stringstream ss(line);
 		unsigned int counter = 0;
 		std::string item;
-
-		while(std::getline(ss,item,',')) {
+		char delimchar = this->delim.c_str()[0];
+		while(std::getline(ss,item,delimchar)) {
 			if(counter < this->tokenbuf.size()) {
 				this->tokenbuf[counter] = item;
 			} else {
@@ -429,7 +414,6 @@ bool RecordParser::parseString(const std::string &line, void * record) {
 void* RecordParser::parseBasicString(const std::string &line) {
 	using namespace std;
 	using namespace boost;
-	unsigned int counter = 0;
 
 	char_separator<char> csep(this->delim.c_str(),"", boost::keep_empty_tokens);
 	tokenizer<char_separator<char> > tok(line,csep);
@@ -468,6 +452,10 @@ void RecordParser::trim(std::string& str) {
 		if(pos != string::npos) str.erase(0, pos);
 		}
 	else str.erase(str.begin(), str.end());
+}
+
+std::vector<tsdb::FieldParser*>& RecordParser::fieldParsers() {
+	return this->field_parsers;
 }
 
 } // namespace tsdb

@@ -39,6 +39,7 @@ public:
 	/* Methods */
 	virtual void writeParsedTokensToRecord(const std::vector<std::string> &tokens, void* record);
 	void bindToRecordParser(tsdb::RecordParser* new_record_parser);
+	void setMissingTokenReplacement(std::string _missing_token_replacement);
 
 	~FieldParser(void);
 protected:
@@ -50,6 +51,8 @@ protected:
 	std::string format;
 
 	size_t field_id;
+	bool missing_tokens_ok;
+	std::string missing_token_replacement;
 
 };
 

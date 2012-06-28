@@ -1,0 +1,6 @@
+*.make
+*.xcodeproj
+[Bb]in/
+[Oo]bj/
+.DS_Store
+Makefile

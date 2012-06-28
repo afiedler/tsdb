@@ -76,9 +76,7 @@ public:
 	~Table(void);
 
 protected:
-#ifndef _GCC_
-	void Table::setHDF5Properties(void);
-#endif
+	void setHDF5Properties(void);
 
 private:
 	/* Properties */
